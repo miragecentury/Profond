@@ -67,8 +67,9 @@ class AsynchtaskService implements ServiceLocatorAwareInterface {
                         $Job->setStatus(Job::STATUS_LAUNCHING_REMOTE);
                         $Job->setMachine($Machine);
                         $em->persist($Job);
-                        $em->flush();
                         $JobService->prepare_distant_directory($Job);
+                        $em->remove($task);
+                        $em->flush();
                         return true;
                     } else {
                         //NARF WAIT ...
@@ -94,9 +95,10 @@ class AsynchtaskService implements ServiceLocatorAwareInterface {
                         $Job->setStatus(Job::STATUS_LAUNCHING_REMOTE);
                         $Job->setMachine($Machine);
                         $em->persist($Job);
-                        $em->flush();
                         $JobService->prepare_distant_directory($Job);
                         $JobService->start($Job);
+                        $em->remove($task);
+                        $em->flush();
                         return true;
                     } else {
                         //????? WTF
@@ -110,8 +112,11 @@ class AsynchtaskService implements ServiceLocatorAwareInterface {
         }
     }
 
-    public function receptJob(Asynchtask $task) {
-        
+    public function stopJob(Asynchtask $task) {
+        $AsynchtaskMapper = $this->getServiceLocator()->get('Profond\Mapper\Asynchtask');
+        $JobMapper = $this->getServiceLocator()->get("Profond\Mapper\Job");
+        $JobService = $this->getServiceLocator()->get("Profond\Service\Job");
+        $Job = $JobMapper->findOne($task->getData()['Job']);
     }
 
     public function deleteAsynch(Job $Job) {

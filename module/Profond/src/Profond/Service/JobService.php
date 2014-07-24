@@ -206,7 +206,6 @@ class JobService implements ServiceLocatorAwareInterface {
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/startjob " . PHP_EOL;
         $job_exec.= "cd /root/profondui/jobs/" . $Job->getId() . "/" . PHP_EOL;
         $job_exec.= $Job->getExecutable()->getExec() . PHP_EOL;
-        $job_exec.= "sleep 60" . PHP_EOL;
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/endjob " . PHP_EOL;
         file_put_contents($temp_file, $job_exec);
         $pathToexec = "/root/profondui/jobs/" . $Job->getId() . "/" . basename($temp_file);
@@ -227,15 +226,22 @@ class JobService implements ServiceLocatorAwareInterface {
         $stream3 = $ssh->exec($path_err_shed);
         stream_set_blocking($stream3, true);
         fclose($stream3);
-        $launch_cmd = "/root/profondui/system/sched.sh create -d" . $pathToexec . " -c '" . $listcpu . "' &" . PHP_EOL;
+        $launch_cmd = "/root/profondui/system/sched.sh create -d \"" . $pathToexec . "\" -c '" . $listcpu . "' &" . PHP_EOL;
         $stream2 = $ssh->exec($launch_cmd);
         stream_set_blocking($stream2, true);
         $return_sched = stream_get_contents($stream2);
         fclose($stream2);
 
-
-
-        return true;
+        if (preg_match("#^OK#", $return_sched)) {
+            preg_match("#^OK:000:([0-9]+)$#", $return_sched, $matches);
+            $Job->setSchedid($matches[1]);
+            $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+            $em->persist($Job);
+            $em->flush();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function startjob(Job $Job) {
@@ -251,7 +257,7 @@ class JobService implements ServiceLocatorAwareInterface {
         $em->persist($Job);
         $em->flush();
 
-        //Récupération des données
+//Récupération des données
 
         $Machine = $Job->getMachine();
         $ssh = new SshAdapter($Machine);
@@ -264,13 +270,13 @@ class JobService implements ServiceLocatorAwareInterface {
         fclose($stream);
         $pathToResultat = $this->getResultPath($Job);
         $ssh->recept("/root/profondui/jobs/" . $Job->getId() . ".7z", $pathToResultat . '/../');
-        //TODO ADD CLEANUP
+//TODO ADD CLEANUP
         $ssh->disconnect();
         exec("cd " . $pathToResultat . '/../ && p7zip -d ' . $Job->getId() . ".7z");
         exec("rm -r " . $pathToResultat);
         exec("mv " . $this->getPath($Job) . "/" . $Job->getId() . " ./resultat");
 
-        //Libére CPU
+//Libére CPU
         $Machine = $Job->getMachine();
         $cpus = $Machine->getCpu();
         foreach ($cpus as $key => $value) {
@@ -282,16 +288,17 @@ class JobService implements ServiceLocatorAwareInterface {
         $em->persist($Machine);
         $em->flush();
 
-        //Re-Setup Job
+//Re-Setup Job
         $Job->setStatus(Job::STATUS_END);
         $em->persist($Job);
         $em->flush();
-        //Avertissement Utilisateur
+//Avertissement Utilisateur
     }
 
     public function stopjob(Job $Job) {
         if ($Job->getStatus() == Job::STATUS_LAUNCHING_REMOTE || $Job->getStatus() == Job::STATUS_RECEIVE_RESULT) {
-            //Add Asynch for stop when change status
+//Add Asynch for stop when change status
+            return false;
         } else {
 
             $Job->setStatus(Job::STATUS_STOP);
@@ -302,22 +309,28 @@ class JobService implements ServiceLocatorAwareInterface {
 
     public function deletejob(Job $Job) {
         if ($Job->getStatus() != Job::STATUS_END && $Job->getStatus() != Job::STATUS_ERR && $Job->getStatus() != Job::STATUS_STOP) {
-            $this->stopjob($Job);
+            $isstop = $this->stopjob($Job);
+        } elseif ($Job->getStatus() == Job::STATUs_LAUNCHING) {
+            
+        } else {
+            $isstop = true;
         }
+        if ($isstop != false) {
+            $AsynchService = $this->getServiceLocator()->get("Profond\Service\Asynchtask");
+            $AsynchService->deleteAsynch($Job);
 
-        $AsynchService = $this->getServiceLocator()->get("Profond\Service\Asynchtask");
-        $AsynchService->deleteAsynch($Job);
-
-        $this->removedir($Job);
-
-        $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
-        $em->remove($Job);
-        $em->flush();
+            $this->removedir($Job);
+            $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
+            $em->remove($Job);
+            $em->flush();
+        } else {
+            
+        }
     }
 
     public function removedir(Job $Job) {
         exec("rmdir -r " . $this->getPath($Job));
-        //Remove dir in machine
+//Remove dir in machine
     }
 
 }

@@ -64,10 +64,10 @@ class Executable extends \Profond\Entity\Executable implements \Doctrine\ORM\Pro
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', 'id', 'label', 'onlyAdmin', 'exec', 'Jobs');
+            return array('__isInitialized__', 'id', 'label', 'onlyAdmin', 'exec', 'install', 'Jobs');
         }
 
-        return array('__isInitialized__', 'id', 'label', 'onlyAdmin', 'exec', 'Jobs');
+        return array('__isInitialized__', 'id', 'label', 'onlyAdmin', 'exec', 'install', 'Jobs');
     }
 
     /**

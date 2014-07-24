@@ -9,6 +9,9 @@
         </h3>
         <ul class="page-breadcrumb breadcrumb">
             <li class="btn-group">
+                <a style="color: white;" class="btn red" type="button" data-toggle="modal" href="#job_supprimer_cf">
+                    <span>Supprimer</span><i class="fa fa-trash-o"></i>
+                </a>
             </li>
             <li>
                 <i class="fa fa-fire"></i>
@@ -286,7 +289,7 @@
     </div>
 </div>
 
-<div class="modal fade bs-modal-sm" id="project_supprimer_cf" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div class="modal fade bs-modal-sm" id="job_supprimer_cf" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-sm">
         <div class="modal-content">
             <div class="modal-header">
@@ -294,11 +297,11 @@
                 <h4 class="modal-title">Confirmer Suppression</h4>
             </div>
             <div class="modal-body">
-                Voulez-vous vraiment supprimer le projet, <span style="color: #0077b3;"><?= $this->Project->getLabel() ?></span> ?
+                Voulez-vous vraiment supprimer le Job, <span style="color: #0077b3;"><?= $this->Job->getLabel() ?></span> ?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn default" data-dismiss="modal">Annuler</button>
-                <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/projectdelete", array("controller" => "Project", "action" => "delete", "id" => $this->Project->getId())) ?>';">Supprimer</button>
+                <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/jobdelete", array("controller" => "Job", "action" => "delete", "id" => $this->Job->getId())) ?>';">Supprimer</button>
             </div>
         </div>
         <!-- /.modal-content -->
