@@ -205,7 +205,7 @@ class JobService implements ServiceLocatorAwareInterface {
         $job_exec = "";
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/startjob " . PHP_EOL;
         $job_exec.= "cd /root/profondui/jobs/" . $Job->getId() . "/" . PHP_EOL;
-        $job_exec.= str_replace("<br>", PHP_EOL . "\t", $Job->getExecutable()->getExec()) . PHP_EOL;
+        $job_exec.= str_replace("%nbcpu%", $Job->getData()["%nbcpu%"], str_replace("<br>", PHP_EOL . "", $Job->getExecutable()->getExec())) . PHP_EOL;
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/endjob " . PHP_EOL;
         file_put_contents($temp_file, $job_exec);
         $pathToexec = "/root/profondui/jobs/" . $Job->getId() . "/" . basename($temp_file);
