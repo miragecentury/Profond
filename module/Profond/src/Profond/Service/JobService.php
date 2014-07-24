@@ -205,7 +205,7 @@ class JobService implements ServiceLocatorAwareInterface {
         $job_exec = "";
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/startjob " . PHP_EOL;
         $job_exec.= "cd /root/profondui/jobs/" . $Job->getId() . "/" . PHP_EOL;
-        $job_exec.= $Job->getExecutable()->getExec() . PHP_EOL;
+        $job_exec.= str_replace("<br>", PHP_EOL . "\t", $Job->getExecutable()->getExec()) . PHP_EOL;
         $job_exec.= "curl -X POST --data 'idjob=" . $Job->getId() . "&key=" . $Job->getMachine()->getKeypass() . "' http://profond.local/endjob " . PHP_EOL;
         file_put_contents($temp_file, $job_exec);
         $pathToexec = "/root/profondui/jobs/" . $Job->getId() . "/" . basename($temp_file);
@@ -226,14 +226,20 @@ class JobService implements ServiceLocatorAwareInterface {
         $stream3 = $ssh->exec($path_err_shed);
         stream_set_blocking($stream3, true);
         fclose($stream3);
-        $launch_cmd = "/root/profondui/system/sched.sh create -d \"" . $pathToexec . "\" -c '" . $listcpu . "' &" . PHP_EOL;
+        $cmd = "/root/profondui/system/sched.sh create -d '/root/profondui/jobs/" . $Job->getId() . "' -c '" . $listcpu . "' " . $pathToexec;
+        $tmp_cmd = "./data/cache/exec" . $Job->getId() . ".sh";
+        file_put_contents($tmp_cmd, $cmd);
+        $pathToexec = "/root/profondui/jobs/" . $Job->getId() . "/" . basename($tmp_cmd);
+        $ssh->send($pathToexec, $tmp_cmd);
+        $ssh->exec("chmod +x " . $pathToexec);
+        $launch_cmd = "bash -c \"exec setsid bash '" . $pathToexec . "' &\" >> .stdout >> .stdout &" . PHP_EOL;
         $stream2 = $ssh->exec($launch_cmd);
         stream_set_blocking($stream2, true);
         $return_sched = stream_get_contents($stream2);
         fclose($stream2);
 
-        if (preg_match("#^OK#", $return_sched)) {
-            preg_match("#^OK:000:([0-9]+)$#", $return_sched, $matches);
+        if (preg_match("#OK#", $return_sched)) {
+            preg_match("#OK:000:([0-9]+)$#", $return_sched, $matches);
             $Job->setSchedid($matches[1]);
             $em = $this->getServiceLocator()->get("Doctrine\ORM\EntityManager");
             $em->persist($Job);

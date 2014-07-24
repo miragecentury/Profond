@@ -95,7 +95,7 @@ class MachineService implements ServiceLocatorAwareInterface {
     public function reserveCpuatMachine(Machine $Machine, $nbcpu, Job $Job) {
         $MachineMapper = $this->getServiceLocator()->get('Profond\Mapper\Machine');
         $Machine = $MachineMapper->findOne($Machine->getId());
-        if (count(array_count_values($Machine->getCpu())[0]) >= $nbcpu) {
+        if (array_count_values($Machine->getCpu())[0] >= $nbcpu) {
             $cpus = $Machine->getCpu();
             $cpt = $nbcpu;
             foreach ($cpus as $key => $value) {
@@ -110,7 +110,7 @@ class MachineService implements ServiceLocatorAwareInterface {
             $em->flush();
             return true;
         } else {
-            false;
+            return false;
         }
     }
 
