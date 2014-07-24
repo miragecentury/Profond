@@ -1,0 +1,600 @@
+<!-- BEGIN PAGE HEADER-->
+<link rel="stylesheet" type="text/css" href="/assets/global/plugins/jstree/dist/themes/default/style.min.css">
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Projet: <span style="color: #0077b3;"><?= $this->Project->getLabel() ?></span> <small>Détails d'un Projet</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+                <a style="color: white;" type="button" class="btn green-seagreen" data-toggle="modal" href="#project_choix_exec">
+                    <span>Lancer un Plan d'Expérience</span><i class="fa fa-fire"></i>
+                </a>
+                <a style="color: white;" href="#" type="button" class="btn blue">
+                    <span>Cloner</span><i class="fa fa-plus"></i>
+                </a>
+                <a style="color: white;" class="btn red" type="button" data-toggle="modal" href="#project_supprimer_cf">
+                    <span>Supprimer</span><i class="fa fa-trash-o"></i>
+                </a>
+            </li>
+            <li>
+                <i class="fa fa-briefcase"></i>
+                <a href="/secure/Project">Projet</a>
+                <i class="fa fa-angle-right"></i>
+                <a href="#"><?= $this->Project->getLabel() ?></a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+<div class="row">
+    <div class="col-md-8">
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-anchor"></i> Fichiers et Configuration
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_1_1" data-toggle="tab">
+                            Explorer </a>
+                    </li>
+                    <li class="">
+                        <a href="#tab_1_2" data-toggle="tab">
+                            Configs </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active in" id="tab_1_1">
+                        <div id="jstree_project_<?= $this->Project->getId() ?>_explorer">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_1_2">
+                        <div class="btn-group btn-group-solid">
+                            <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/forcereloadconfigproject", array("controller" => "Project", "action" => "forcereloadconfig", "id" => $Project->getId())) ?>';">Force Recharge</button>
+                            <button type="button" class="btn yellow">Effacer Historique</button>
+                        </div>
+                        <div style="padding-bottom: 5px;" class="clear-fix"></div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">
+                                            #
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Tag
+                                        </th>
+                                        <th style="text-align: center;">
+                                            File
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Line
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Order
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach ($this->ConfigsByTag as $tag => $Configs): ?>
+                                        <?php foreach ($Configs as $key => $Config): ?>
+                                            <tr>
+                                                <td style="text-align: center;"><?= $Config->getId() ?></td>
+                                                <?php if ($key == 0): ?>
+                                                    <td style="text-align: center;" rowspan="<?= count($Configs) ?>"><?= $Config->getTag() ?></td>
+                                                <?php endif; ?>
+                                                <td style="text-align: center;"><?= str_replace($this->projectpath, "", $Config->getRelpath()) ?></td>
+                                                <td style="text-align: center;"><?= $Config->getLine() ?></td>
+                                                <td style="text-align: center;"><?= $Config->getOrdre() ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix margin-bottom-20">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-anchor"></i> Description
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Nom du Projet:
+                        </td>
+                        <td>
+                            <?= $this->Project->getLabel() ?>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Date de Création:
+                        </td>
+                        <td>
+                            <?= $this->Project->getDateCrea()->format(DATE_RFC822) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Dernière Date de Modification:
+                        </td>
+                        <td>
+                            <?= $this->Project->getDateLastMod()->format(DATE_RFC822) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Partage [Affichage] :
+                        </td>
+                        <td style="text-align: center;">
+                            <input value="<?= $this->Project->getShare() ?>" type="checkbox" class="make-switch" data-on-text="&nbsp;On&nbsp;" data-off-text="&nbsp;Off&nbsp;">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Partage [Ecriture] :
+                        </td>
+                        <td style="text-align: center;">
+                            <input value="<?= $this->Project->getShareAll() ?>" type="checkbox" class="make-switch" data-on-text="&nbsp;On&nbsp;" data-off-text="&nbsp;Off&nbsp;">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="portlet box grey-cascade">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-magnet"></i> Jobs
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Label</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->Jobs as $Job): ?>
+                        <tr>
+                            <td>
+                                <?= $Job->getId() ?>
+                            </td>
+                            <td>
+                                <?= $Job->getLabel() ?>
+                            </td>
+                            <td>
+                                <span class="label label-sm label-warning">
+                                    <?= $Job->getStatus() ?> </span>
+                            </td>
+                            <td>
+                                <a href="<?= $this->url("profond/jobdetails", array("controller" => "Job", "action" => "details", "id" => $Job->getId())) ?>" class="btn default btn-xs blue"><i class="fa fa-eye"></i> Voir</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-modal-sm" id="project_supprimer_cf" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Confirmer Suppression</h4>
+            </div>
+            <div class="modal-body">
+                Voulez-vous vraiment supprimer le projet, <span style="color: #0077b3;"><?= $this->Project->getLabel() ?></span> ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/projectdelete", array("controller" => "Project", "action" => "delete", "id" => $this->Project->getId())) ?>';">Supprimer</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade bs-modal-sm" id="project_choix_exec" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Choix de l'Exécutable</h4>
+            </div>
+            <div class="modal-body">
+                <?php foreach ($this->Executables as $executable): ?>
+                    <button class="btn blue btn-block" onclick="document.location = '<?= $this->url("profond/lanceurprepare", array("controller" => "Lanceur", "action" => "prepare", "idproject" => $Project->getId(), "idexec" => $executable->getId())) ?>';"><?= $executable->getLabel() ?></button>
+                <?php endforeach; ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/projectdelete", array("controller" => "Project", "action" => "delete", "id" => $this->Project->getId())) ?>';">Supprimer</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade bs-modal-sm" id="project_upload" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Envoyer un fichier</h4>
+            </div>
+            <div class="modal-body">
+                <form id="upload_form" enctype="multipart/form-data">
+                    <input id="upload_file" name="file" type="file" value="">
+                    <input id="upload_target" name="target" type="hidden" value="">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div id="upload_bar" style="display: none;" class="progress progress-striped active">
+                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                        <span class="sr-only">XXXX</span>
+                    </div>
+                </div>
+                <button id="upload_button" type="button" class="btn default" onclick="profond_upload_file(<?= $this->Project->getId() ?>);">Envoyer</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<?php
+$this->inlineScript()->appendFile("/assets/global/plugins/jstree/dist/jstree.min.js", "text/javascript", array());
+$this->inlineScript()->appendScript("
+    $(function() {
+        profond_upload_file = function(data){
+            if($('#upload_file').attr('value') != ''){
+                $('#upload_button').hide();
+                $('#project_upload .close').hide();
+                $('#upload_bar .progress-bar').width('0%');
+                $('#upload_bar').show();
+                var formData = new FormData($('#upload_form')[0])
+                formData.append('project',data);
+                console.log(formData);
+                $.ajax(
+                {
+                    url: '" . $this->URLPROFOND_AJAX . "jtreeupload',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function()
+                    {
+                        var xhr = new window.XMLHttpRequest();
+                        //Upload progress
+                        xhr.upload.addEventListener('progress', function(evt) {
+                            if (evt.lengthComputable) {
+                                //Do something with upload progress
+                                $('#upload_bar .progress-bar').width(((evt.loaded / evt.total) * 100) + '%');
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(data){
+                        $('#upload_button').show();
+                        $('#project_upload .close').show();
+                        $('#upload_bar').hide();
+                        $('#upload_file').attr('value','');
+                        $('#project_upload').modal('hide');
+                        console.log(data);
+                        var jt = $.jstree.reference('#jstree_project_" . $this->Project->getId() . "_explorer');
+                        var parent = jt.get_node($('#'+data.target));
+                        console.log(parent);
+                        var node = jt.create_node(parent,{id:data.id,type:'file',text:data.text});
+                    },
+                    error: function(data){
+                        console.log(data);
+                    }
+                }
+                );
+            }
+        };
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').jstree({
+            'core' : {
+              'check_callback' : true,
+              'data' : {
+                    'url' : function (node) {
+                      return '/secure/project/jtreeget';
+                    },
+                    'data' : function (node) {
+                      return {'id' : " . $this->Project->getId() . " };
+                    }
+                },
+            },
+            'contextmenu' : {
+                    'items' : function(node) {
+                            var tmp = $.jstree.defaults.contextmenu.items();
+                            delete tmp.create.action;
+                            tmp.upload = {
+                                'label' : 'Upload',
+                                'action' : function(data){
+                                    var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    console.log(obj);
+                                    $('#upload_file').attr('value','');
+                                    $('#upload_target').attr('value',obj.id);
+                                    $('#project_upload').modal({keyboard:false});
+                                },
+                            };
+                            
+                            tmp.decompress = {
+                                'separator_before': true,
+                                'label' : 'Decompress',
+                                'action' : function(data){
+                                    var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    console.log(obj);
+                                    $.post('" . $this->URLPROFOND_AJAX . "jtreedecompress',{'projectid':" . $this->Project->getId() . ",'text': node.text,'path' : node.id,'direct': true}).done(function(data){
+                                                                });
+                                    inst.refresh();
+                                }
+                            };
+                            
+                            tmp.decompressdir = {
+                                'separator_after': true,
+                                'label' : 'Decompress in Dir',
+                                'action' : function(data){
+                                    var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    console.log(obj);
+                                    $.post('" . $this->URLPROFOND_AJAX . "jtreedecompress',{'projectid':" . $this->Project->getId() . ",'text': node.text,'path' : node.id,'direct': false}).done(function(data){
+                                                                });
+                                    inst.refresh();
+                                }
+                            };
+                            
+                            
+                            
+                            tmp.create.label = \"New\";
+                            tmp.create.submenu = {
+                                    'create_folder' : {
+                                            'separator_after'	: true,
+                                            'label'				: 'Folder',
+                                            'action'			: function (data) {
+                                                    var inst = $.jstree.reference(data.reference),
+                                                            obj = inst.get_node(data.reference);
+                                                            inst.create_node(obj, { type : 'default', text : 'newfolder' }, 'last', function (new_node) {
+                                                            setTimeout(function () {
+                                                                if(new_node.parent != '__'){
+                                                                    path = new_node.parent + '__' + new_node.text;
+                                                                }else{
+                                                                    path = '__'+ new_node.text;
+                                                                }
+                                                                inst.set_id(new_node,path);
+                                                                console.log(new_node);
+                                                                $.post('" . $this->URLPROFOND_AJAX . "jtreecreatedir',{'projectid':" . $this->Project->getId() . ",'text': new_node.text,'path' : new_node.id,'parent':new_node.parent}).done(function(data){
+                                                                });
+                                                                inst.edit(new_node); 
+                                                            },0);
+                                                    });
+                                                    
+                                            }
+                                    },
+                                    'create_file' : {
+                                            'label'				: 'File',
+                                            'action'			: function (data) {
+                                                    var inst = $.jstree.reference(data.reference),
+                                                    obj = inst.get_node(data.reference);
+                                                    inst.create_node(obj, { type : 'file', text : 'newfile' }, 'last', function (new_node) {
+                                                            setTimeout(function () {
+                                                                if(new_node.parent != '__'){
+                                                                    path = new_node.parent + '__' + new_node.text;
+                                                                }else{
+                                                                    path = '__'+ new_node.text;
+                                                                }
+                                                                inst.set_id(new_node,path);
+                                                                console.log(new_node);
+                                                                $.post('" . $this->URLPROFOND_AJAX . "jtreecreatefile',{'projectid':" . $this->Project->getId() . ",'text': new_node.text,'path' : new_node.id,'parent':new_node.parent}).done(function(data){
+                                                                });
+                                                                inst.edit(new_node); 
+                                                            },0);
+                                                    });
+                                            }
+                                    }
+                            };
+                            if(this.get_type(node) === 'file') {
+                                    delete tmp.create;
+                                    delete tmp.upload;
+                            }
+                            if(node.id === '__'){
+                                delete tmp.edit;
+                                delete tmp.remove;
+                                delete tmp.ccp;
+                                delete tmp.rename;
+                            }
+                            var path = node.text;
+                            var regexAll = /[^\\\\]*\.(\w+)$/;
+                            var total = path.match(regexAll);
+                            if(total != null){
+                                if( typeof total[1] != 'undefined' ) {
+                                    var filename = total[0];
+                                    var extension = total[1];
+                                    if(extension != '7z' && extension != 'zip'){
+                                        delete tmp.decompressdir;
+                                        delete tmp.decompress;
+                                    }
+                                }else{
+                                    delete tmp.decompressdir;
+                                    delete tmp.decompress;
+                                }
+                            }else{
+                                delete tmp.decompressdir;
+                                delete tmp.decompress;
+                            }
+                            return tmp;
+                    }
+            },
+           'plugins' : [ 'contextmenu','unique','state','sort','dnd','types' ],
+           'types' : {
+                'default' : {
+                    'icon' : 'fa fa-folder icon-state-warning icon-lg'
+                },
+                'file' : {
+                    'icon' : 'fa fa-file icon-state-warning icon-lg'
+                }
+            },
+        });
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('changed.jstree', function(e, data) {
+            console.log(data.selected);
+        });
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('rename_node.jstree',function(e, data){
+            console.log(data);
+            $.post('" . $this->URLPROFOND_AJAX . "jtreerename',{'projectid':" . $Project->getId() . ",'id':data.node.id,'new':data.text,'old':data.old}).done(function(data){
+               console.log(data);
+            });
+            
+        });
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('create_node.jstree',function(e, data){
+        });
+        
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('delete_node.jstree',function(e, data){
+            console.log(data);
+            $.post('" . $this->URLPROFOND_AJAX . "jtreedelete',{'projectid':" . $this->Project->getId() . ",'id':data.node.id,'node':data.node,'parent':data.parent}).done(function(data){
+               console.log(data);
+            });
+        });
+        
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('copy_node.jstree',function(e, data){
+            console.log(data);
+            
+            var path = '';
+            if(data.node.parent == '__'){
+                path = '__' + data.node.text;
+            }else{
+                path = data.node.parent + '__' + data.node.text;
+            }
+           $.jstree.reference('#jstree_project_" . $this->Project->getId() . "_explorer').set_id(data.node,path);
+            $.post('" . $this->URLPROFOND_AJAX . "jtreecopy',{'projectid':" . $this->Project->getId() . ",'origin_id':data.original.id,'parent':data.node.parent}).done(function(data){
+               console.log(data);
+            });
+        });
+        
+        $('#jstree_project_" . $this->Project->getId() . "_explorer').on('move_node.jstree',function(e, data){
+            console.log(data);
+            var old_id = data.node.id;
+            var path = '';
+            if(data.node.parent == '__'){
+                path = '__' + data.node.text;
+            }else{
+                path = data.node.parent + '__' + data.node.text;
+            }
+           $.jstree.reference('#jstree_project_" . $this->Project->getId() . "_explorer').set_id(data.node,path);
+            $.post('" . $this->URLPROFOND_AJAX . "jtreemove',{'projectid':" . $this->Project->getId() . ",'origin_id':old_id,'parent':data.node.parent}).done(function(data){
+               console.log(data);
+            });
+        });
+    });
+        ", "text/javascript");
+
+$this->inlineScript()->appendScript("
+      var initTable3 = function () {
+        var table = $('#sample_3');
+
+        /* Formatting function for row details */
+        function fnFormatDetails(oTable, nTr) {
+            var aData = oTable.fnGetData(nTr);
+            var sOut = '<table>';
+            sOut += '<tr><td>Platform(s):</td><td>' + aData[2] + '</td></tr>';
+            sOut += '<tr><td>Engine version:</td><td>' + aData[3] + '</td></tr>';
+            sOut += '<tr><td>CSS grade:</td><td>' + aData[4] + '</td></tr>';
+            sOut += '<tr><td>Others:</td><td>Could provide a link here</td></tr>';
+            sOut += '</table>';
+
+            return sOut;
+        }
+
+        /*
+         * Insert a 'details' column to the table
+         */
+        var nCloneTh = document.createElement('th');
+        nCloneTh.className = \"table-checkbox\";
+
+        var nCloneTd = document.createElement('td');
+        nCloneTd.innerHTML = '<span class=\"row-details row-details-close\"></span>';
+
+        table.find('thead tr').each(function () {
+            this.insertBefore(nCloneTh, this.childNodes[0]);
+        });
+
+        table.find('tbody tr').each(function () {
+            this.insertBefore(nCloneTd.cloneNode(true), this.childNodes[0]);
+        });
+
+        /*
+         * Initialize DataTables, with no sorting on the 'details' column
+         */
+        var oTable = table.dataTable({
+            \"columnDefs\": [{
+                \"orderable\": false,
+                \"targets\": [0]
+            }],
+            \"order\": [
+                [1, 'asc']
+            ],
+            \"lengthMenu\": [
+                [5, 15, 20, -1],
+                [5, 15, 20, \"All\"] // change per page values here
+            ],
+            // set the initial value
+            \"pageLength\": 10,
+        });
+        var tableWrapper = $('#sample_3_wrapper'); // datatable creates the table wrapper by adding with id {your_table_jd}_wrapper
+
+        tableWrapper.find('.dataTables_length select').select2(); // initialize select2 dropdown
+
+        /* Add event listener for opening and closing details
+         * Note that the indicator for showing which row is open is not controlled by DataTables,
+         * rather it is done here
+         */
+        table.on('click', ' tbody td .row-details', function () {
+            var nTr = $(this).parents('tr')[0];
+            if (oTable.fnIsOpen(nTr)) {
+                /* This row is already open - close it */
+                $(this).addClass(\"row-details-close\").removeClass(\"row-details-open\");
+                oTable.fnClose(nTr);
+            } else {
+                /* Open this row */
+                $(this).addClass(\"row-details-open\").removeClass(\"row-details-close\");
+                oTable.fnOpen(nTr, fnFormatDetails(oTable, nTr), 'details');
+            }
+        });
+    }
+
+", "text/javascript");
+?>
+

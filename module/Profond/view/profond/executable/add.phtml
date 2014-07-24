@@ -1,0 +1,97 @@
+<link rel="stylesheet" type="text/css" href="../../assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.css" />                   
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Executable <small>Ajout d'un exécutable</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-fire"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Executable")) ?>">Executable</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-briefcase"></i>Ajout d'un Projet
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form action="<?= $this->url("profond/default", array("controller" => "Executable", "action" => "add")) ?>" method="POST" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Nom d'un Executable :</label>
+                            <div class="col-md-4">
+                                <input name="<?= $this->formAddExecutable->get("label")->getName() ?>" type="text" class="form-control" placeholder="Nom du Projet" value="<?php echo $this->formAddExecutable->get("label")->getValue() ?>">
+                                <span class="help-block">
+                                    Attention seulement ces caractères sont utilisable [a-zA-Z0-9]</span>
+                                <?php foreach ($this->formAddExecutable->getMessages("label") as $err): ?>
+                                    <span class="help-block">
+                                        <?= $err ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class="col-md-3 control-label" >Sécurité:</label>
+                            <div class='col-md-4'>
+                                <input value="<?= $this->formAddExecutable->get("only_admin")->getValue() ?>" name="<?= $this->formAddExecutable->get("only_admin")->getName() ?>" type="checkbox" class="make-switch" data-on-text="&nbsp;Admin&nbsp;" data-off-text="&nbsp;Public&nbsp;">
+                                <?php foreach ($this->formAddExecutable->getMessages("only_admin") as $err): ?>
+                                    <span class="help-block">
+                                        <?= $err ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                        <div class='form-group'>
+                            <label class="col-md-3 control-label" >Commande d'Exécution:</label>
+                            <div class='col-md-4'>
+                                <textarea name="<?= $this->formAddExecutable->get("exec")->getName() ?>" class="wysihtml5" data-provide="markdown" size="10" style="height: 300px;"><?= $this->formAddExecutable->get("exec")->getValue() ?></textarea>
+                                <?php foreach ($this->formAddExecutable->getMessages("exec") as $err): ?>
+                                    <span class="help-block">
+                                        <?= $err ?>
+                                    </span>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="<?php echo $this->formAddExecutable->get("token_csrf")->getName() ?>" value="<?php echo $this->formAddExecutable->get("token_csrf")->getValue() ?>" />
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn blue">Ajouter</button>
+                            <button onclick="document.location = '<?= $this->url("profond/default", array("controller" => "Executable")) ?>';" type="button" class="btn default">Annuler</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+$this->inlineScript()->appendFile("/assets/global/plugins/bootstrap-wysihtml5/wysihtml5-0.3.0.js", "text/javascript", array());
+$this->inlineScript()->appendFile("/assets/global/plugins/bootstrap-wysihtml5/bootstrap-wysihtml5.js", "text/javascript", array());
+$this->inlineScript()->appendScript("  
+     $('.wysihtml5').wysihtml5({
+                \"stylesheets\": [\"/assets/global/plugins/bootstrap-wysihtml5/wysiwyg-color.css\"],
+                'font-styles': false, //Font styling, e.g. h1, h2, etc. Default true
+                'emphasis': false, //Italics, bold, etc. Default true
+                'lists': false, //(Un)ordered lists, e.g. Bullets, Numbers. Default true
+                'html': false, //Button which allows you to edit the generated HTML. Default false
+                'link': false, //Button to insert a link. Default true
+                'image': false, //Button to insert an image. Default true,
+                'color': false //Button to change color of font  
+            });
+", "text/javascript");
+?>

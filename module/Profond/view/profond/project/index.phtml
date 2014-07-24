@@ -1,0 +1,54 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Projet <small>Listing des Projets</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+                <a style="color: white;" href="<?= $this->url("profond/default", array("controller" => "Project", "action" => "add")) ?>" type="button" class="btn blue">
+                    <span>Ajouter</span><i class="fa fa-plus"></i>
+                </a>
+            </li>
+            <li>
+                <i class="fa fa-briefcase"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Project")) ?>">Projet</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+<div class="tiles">
+    <div class="tile bg-green-meadow double" onclick="document.location = '<?= $this->url("profond/default", array("controller" => "Project", "action" => "add")) ?>';">
+        <div class="tile-body">
+            <i class="fa fa-plus"></i>
+        </div>
+        <div class="tile-object">
+            <div class="name">
+            </div>
+            <div class="number">
+                Créer un Projet
+            </div>
+        </div>
+    </div>
+    <?php foreach ($this->Projects as $Project): ?>
+        <div class="tile bg-blue-hoki double" onclick="document.location = '<?= $this->url("profond/projectdetails", array("controller" => "Project", "action" => "details", "id" => $Project->getId())) ?>';">
+            <div class="tile-body">
+                <i class="fa fa-briefcase"></i>
+                <p><?= $Project->getLabel() ?></p>
+            </div>
+            <div class="tile-object">
+                <div class="name">
+                    Projet
+                </div>
+                <div class="number">
+                    <?= $Project->getId() ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+</div>

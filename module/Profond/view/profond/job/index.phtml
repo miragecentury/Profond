@@ -1,0 +1,164 @@
+                   
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Jobs <small>Listing des Jobs en cours</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-fire"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Job")) ?>">Job</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+<!-- BEGIN PAGE CONTENT-->
+<!-- ................ -->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN EXAMPLE TABLE PORTLET-->
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Vos Jobs
+                </div>
+                <div class="tools">
+                    <a href="javascript:;" class="collapse">
+                    </a>
+                    <a href="javascript:;" class="reload">
+                    </a>
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="table-toolbar">
+                </div>
+                <div id="sample_1_wrapper" class="dataTables_wrapper no-footer">
+                    <div class="table-scrollable">
+                        <table class="table table-striped table-bordered table-hover dataTable no-footer" id="sample_1" role="grid" aria-describedby="sample_1_info">
+                            <thead>
+                                <tr role="row">
+                                    <th class="table-checkbox sorting_disabled" rowspan="1" colspan="1" aria-label="" style="text-align: center;">
+                            <div class="checker">
+                                <span><input type="checkbox" class="group-checkable" data-set="#sample_1 .checkboxes"></span>
+                            </div>
+                            </th>
+                            <th style="text-align: center;" class="sorting" tabindex="0" aria-controls="sample_1" rowspan="1" colspan="1" aria-label="Username: activate to sort column ascending" style="width: 287px;">
+                                Nom du Job
+                            </th>
+                            <th style="text-align: center;" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Email">
+                                Projet
+                            </th>
+                            <th style="text-align: center;" class="sorting_disabled" rowspan="1" colspan="1" aria-label="Points">
+                                Serveurs
+                            </th>
+                            <th style="text-align: center;">
+                                Date Création
+                            </th>
+                            <th style="text-align: center;">
+                                Date de début d'Exécution
+                            </th>
+                            <th style="text-align: center;">
+                                Date de fin d'Exécution
+                            </th>
+                            <th style="text-align: center;" class="sorting_disabled" rowspan="1" colspan="1" aria-label="
+                                Status
+                                ">
+                                Status
+                            </th>
+                            <th style="text-align: center;">
+                            </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($this->Jobs as $Job): ?>
+                                    <tr  class="gradeX odd" role="row">
+                                        <td style="text-align: center;">
+                                            <div class="checker"><span><input type="checkbox" class="checkboxes" value="1"></span></div>
+                                        </td>
+                                        <td style="text-align: center;" class="">
+                                            <a href="<?= $this->url("profond/jobdetails", array("controller" => "Job", "action" => "details", "id" => $Job->getId())) ?>">
+                                                <?= $Job->getLabel() ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="<?= $this->url("profond/projectdetails", array("controller" => "Project", "action" => "details", "id" => $Job->getProject()->getId())) ?>">
+                                                <?= $Job->getProject()->getLabel() ?>
+                                            </a>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <span>
+                                                <?php if ($Job->getMachine()->getConnectionType() == 'SSH'): ?>
+                                                    <?= $Job->getMachine()->getLabel() ?> : <?= $Job->getMachine()->getConfig()['ip'] ?>
+                                                <?php else: ?>
+                                                    <?= $Job->getMachine()->getLabel() ?>
+                                                <?php endif; ?>
+                                            </span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?= $Job->getDatetimeCrea()->format(DATE_COOKIE) ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php if ($Job->getDatetimeStartExec() != null): ?>
+                                                <?= $Job->getDatetimeStartExec()->format(DATE_COOKIE) ?>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php if ($Job->getDatetimeEndExec() != null): ?>
+                                                <?= $Job->getDatetimeEndExec()->format(DATE_COOKIE) ?>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <?php
+                                            switch ($Job->getStatus()):
+                                                case Profond\Entity\Job::STATUS_RUNNING:
+                                                    ?>
+                                                    <span class="label label-sm label-success">En cours d'Exécution</span>
+                                                    <?php break; ?>
+                                                <?php case Profond\Entity\Job::STATUS_ERR: ?>
+                                                    <span class="label label-sm label-danger">Erreur Contacter un Administrateur</span>
+                                                    <?php break; ?>
+                                                <?php case Profond\Entity\Job::STATUS_LAUNCHING_REMOTE : ?>
+                                                    <span class="label label-sm label-warning">Lancment sur la machine distante</span>
+                                                    <?php break; ?>
+                                                <?php case Profond\Entity\Job::STATUS_RECEIVE_RESULT : ?>
+                                                    <span class="label label-sm label-warning">Réception des résultats en cours</span>
+                                                    <?php break; ?>
+                                                <?php case Profond\Entity\Job::STATUS_WAITING_DATE : ?>
+                                                    <span class="label label-sm label-warning">En attente de la date de lancement</span>
+                                                    <?php break; ?>
+                                                <?php case Profond\Entity\Job::STATUS_WAITING_RESOURCE : ?>
+                                                    <span class="label label-sm label-warning">En attente de Machine Libre</span>
+                                                    <?php break; ?>
+                                                <?php default : ?>
+                                                    <span class="label label-sm label-warning"><?= $Job->getStatus() ?></span>
+                                                    <?php break; ?>
+                                            <?php endswitch; ?>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <a href="<?= $this->url("profond/jobdetails", array("controller" => "Job", "action" => "details", "id" => $Job->getId())) ?>" class="btn default btn-xs blue"><i class="fa fa-eye"></i> Voir</a>
+                                            <?php if ($Job->getStatus() != Profond\Entity\Job::STATUS_END && $Job->getStatus() != Profond\Entity\Job::STATUS_ERR && $Job->getStatus() != Profond\Entity\Job::STATUS_STOP): ?>
+                                                <a href="#" class="btn default btn-xs red"><i class="fa fa-stop"></i> Stop</a>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END EXAMPLE TABLE PORTLET-->
+    </div>
+</div>
+
+<!-- ................ -->
+<!-- END PAGE CONTENT-->

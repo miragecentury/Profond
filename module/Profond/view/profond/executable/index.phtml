@@ -1,0 +1,70 @@
+                   
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Executable <small>Listing des Executables</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <?php if ($this->User->getAdmin()): ?>
+                <li class="btn-group">
+                    <a style="color: white;" href="<?= $this->url("profond/default", array("controller" => "Executable", "action" => "add")) ?>" type="button" class="btn blue">
+                        <span>Ajouter</span><i class="fa fa-plus"></i>
+                    </a>
+                </li>
+            <?php endif; ?>
+            <li>
+                <i class="fa fa-fire"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Executable")) ?>">Executable</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+<div class='row'>
+    <div class="col-md-12">
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th style="text-align: center;">
+                        #
+                    </th>
+                    <th style="text-align: center;">
+                        Label
+                    </th>
+                    <th style="text-align: center;">
+                        Autorisation
+                    </th>
+                    <th style="text-align: center;">
+                        Execution
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->Executables as $Executable): ?>
+                    <tr>
+                        <td  style="text-align: center;">
+                            <?= $Executable->getId() ?>
+                        </td>
+                        <td  style="text-align: center;">
+                            <?= $Executable->getLabel() ?>
+                        </td>
+                        <td  style="text-align: center;">
+                            <?php if ($Executable->getOnlyAdmin()): ?>
+                                <span class="label label-sm label-danger"> OnlyAdmin </span>
+                            <?php else: ?>
+                                <span class="label label-sm label-success"> Public </span>
+                            <?php endif; ?>
+                        </td>
+                        <td  style="text-align: left;">
+                            <?= $Executable->getExec() ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

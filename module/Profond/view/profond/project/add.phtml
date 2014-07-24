@@ -1,0 +1,56 @@
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Projet <small>Page de création d'un Projet</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-briefcase"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Project")) ?>">Projet</a>
+                <i class="fa fa-angle-right"></i>
+            </li>
+            <li>
+                <a href="#">Création</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-briefcase"></i>Ajout d'un Projet
+                </div>
+            </div>
+            <div class="portlet-body form">
+                <!-- BEGIN FORM-->
+                <form action="<?= $this->url("profond/default", array("controller" => "project","action"=>"add")) ?>" method="POST" class="form-horizontal">
+                    <div class="form-body">
+                        <div class="form-group">
+                            <label class="col-md-3 control-label">Nom du Projet :</label>
+                            <div class="col-md-4">
+                                <input name="label" type="text" class="form-control" placeholder="Nom du Projet" value="<?php echo $this->form_addProject->get("label")->getValue() ?>">
+                                <span class="help-block">
+                                    Attention seulement ces caractères sont utilisable [a-zA-Z0-9]</span>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="<?php echo $this->form_addProject->get("token_csrf")->getName() ?>" value="<?php echo $this->form_addProject->get("token_csrf")->getValue() ?>" />
+                    <div class="form-actions fluid">
+                        <div class="col-md-offset-3 col-md-9">
+                            <button type="submit" class="btn blue">Ajouter</button>
+                            <button onclick="document.location = '<?= $this->url("profond/default", array("controller" => "project"))  ?>';" type="button" class="btn default">Annuler</button>
+                        </div>
+                    </div>
+                </form>
+                <!-- END FORM-->
+            </div>
+        </div>
+    </div>
+</div>

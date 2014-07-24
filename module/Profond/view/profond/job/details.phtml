@@ -1,0 +1,441 @@
+<!-- BEGIN PAGE HEADER-->
+<link rel="stylesheet" type="text/css" href="/assets/global/plugins/jstree/dist/themes/default/style.min.css">
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Jobs: <span style="color: #0077b3;"><?= $this->Job->getLabel() ?></span> <small>Détails d'un Job</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li class="btn-group">
+            </li>
+            <li>
+                <i class="fa fa-fire"></i>
+                <a href="/secure/Jobs">Jobs</a>
+                <i class="fa fa-angle-right"></i>
+                <a href="#"><?= $this->Job->getLabel() ?></a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+<div class="row">
+    <div class="col-md-8">
+        <div class="portlet box green">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-anchor"></i> Fichiers et Configuration
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_1_1" data-toggle="tab">
+                            Explorer_Resultat </a>
+                    </li>
+                    <li class="">
+                        <a href="#tab_1_3" data-toggle="tab">
+                            Explorer_Original </a>
+                    </li>
+                    <li class="">
+                        <a href="#tab_1_2" data-toggle="tab">
+                            Configs </a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade active in" id="tab_1_1">
+                        <div id="jstree_job_<?= $this->Job->getId() ?>_explorer_resultat">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_1_3">
+                        <div id="jstree_job_<?= $this->Job->getId() ?>_explorer_original">
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="tab_1_2">
+                        <div class="btn-group btn-group-solid">
+                            <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/forcereloadconfigproject", array("controller" => "Project", "action" => "forcereloadconfig", "id" => $Project->getId())) ?>';">Force Recharge</button>
+                            <button type="button" class="btn yellow">Effacer Historique</button>
+                        </div>
+                        <div style="padding-bottom: 5px;" class="clear-fix"></div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: center;">
+                                            #
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Tag
+                                        </th>
+                                        <th style="text-align: center;">
+                                            File
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Line
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Order
+                                        </th>
+                                        <th style="text-align: center;">
+                                            Value
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">%label%</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;"><?= $Job->getData()['%label%'] ?></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">%nbcpu%</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;">-</td>
+                                        <td style="text-align: center;"><?= $Job->getData()['%nbcpu%'] ?></td>
+                                    </tr>
+                                    <?php foreach ($this->ConfigsByTag as $tag => $Configs):
+                                        ?>
+                                        <?php foreach ($Configs as $key => $Config): ?>
+                                            <tr>
+                                                <td style="text-align: center;"><?= $Config->getId() ?></td>
+                                                <?php if ($key == 0): ?>
+                                                    <td style="text-align: center;" rowspan="<?= count($Configs) ?>"><?= $Config->getTag() ?></td>
+                                                <?php endif; ?>
+                                                <td style="text-align: center;"><?= str_replace($this->projectpath, "", $Config->getRelpath()) ?></td>
+                                                <td style="text-align: center;"><?= $Config->getLine() ?></td>
+                                                <td style="text-align: center;"><?= $Config->getOrdre() ?></td>
+                                                <?php if ($key == 0): ?>
+                                                    <td style="text-align: center;" rowspan="<?= count($Configs) ?>"><?= $Job->getData()[$tag] ?></td>
+                                                <?php endif; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix margin-bottom-20">
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-anchor"></i> Description Projet
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Nom du Projet:
+                        </td>
+                        <td>
+                            <?= $this->Project->getLabel() ?>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Date de Création:
+                        </td>
+                        <td>
+                            <?= $this->Project->getDateCrea()->format(DATE_RFC822) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            Dernière Date de Modification:
+                        </td>
+                        <td>
+                            <?= $this->Project->getDateLastMod()->format(DATE_RFC822) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <a href="<?= $this->url("profond/projectdetails", array("controller" => "Project", "action" => "details", "id" => $Job->getProject()->getId())) ?>" class="btn default btn-xs blue"><i class="fa fa-eye"></i> Voir</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="portlet box green-meadow">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-anchor"></i> Description Job
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                <tbody>
+                    <tr>
+                        <td>
+                            Nom du Job:
+                        </td>
+                        <td>
+                            <?= $this->Job->getLabel() ?>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                            Date de Création:
+                        </td>
+                        <td>
+                            <?= $this->Job->getDatetimeCrea()->format(DATE_RFC822) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Machine</td>
+                        <td>
+                            <span>
+                                <?php if ($Job->getMachine()->getConnectionType() == 'SSH'): ?>
+                                    <?= $Job->getMachine()->getLabel() ?> : <?= $Job->getMachine()->getConfig()['ip'] ?>
+                                <?php else: ?>
+                                    <?= $Job->getMachine()->getLabel() ?>
+                                <?php endif; ?>
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Status :</td>
+                        <td>
+                            <?php
+                            switch ($Job->getStatus()):
+                                case Profond\Entity\Job::STATUS_RUNNING:
+                                    ?>
+                                    <span class="label label-sm label-success">En cours d'Exécution</span>
+                                    <?php break; ?>
+                                <?php case Profond\Entity\Job::STATUS_ERR: ?>
+                                    <span class="label label-sm label-danger">Erreur Contacter un Administrateur</span>
+                                    <?php break; ?>
+                                <?php case Profond\Entity\Job::STATUS_LAUNCHING_REMOTE : ?>
+                                    <span class="label label-sm label-warning">Lancment sur la machine distante</span>
+                                    <?php break; ?>
+                                <?php case Profond\Entity\Job::STATUS_RECEIVE_RESULT : ?>
+                                    <span class="label label-sm label-warning">Réception des résultats en cours</span>
+                                    <?php break; ?>
+                                <?php case Profond\Entity\Job::STATUS_WAITING_DATE : ?>
+                                    <span class="label label-sm label-warning">En attente de la date de lancement</span>
+                                    <?php break; ?>
+                                <?php case Profond\Entity\Job::STATUS_WAITING_RESOURCE : ?>
+                                    <span class="label label-sm label-warning">En attente de Machine Libre</span>
+                                    <?php break; ?>
+                                <?php default : ?>
+                                    <span class="label label-sm label-warning"><?= $Job->getStatus() ?></span>
+                                    <?php break; ?>
+                            <?php endswitch; ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="portlet box blue-steel">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-cogs"></i>Description de l'Exécutable
+                </div>
+                <div class="tools">
+                </div>
+            </div>
+            <div class="portlet-body">
+                <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center;">Label :</td>
+                            <td style="text-align: center;"><?= $this->Executable->getLabel() ?></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;">OnlyAdmin :</td>
+                            <td style="text-align: center;">
+                                <?php if ($this->Executable->getOnlyAdmin()): ?>
+                                    Oui
+                                <?php else: ?>
+                                    Non
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="text-align: center;" >Exec :</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <?= $this->Executable->getExec() ?>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bs-modal-sm" id="project_supprimer_cf" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+                <h4 class="modal-title">Confirmer Suppression</h4>
+            </div>
+            <div class="modal-body">
+                Voulez-vous vraiment supprimer le projet, <span style="color: #0077b3;"><?= $this->Project->getLabel() ?></span> ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn default" data-dismiss="modal">Annuler</button>
+                <button type="button" class="btn red" onclick="document.location = '<?= $this->url("profond/projectdelete", array("controller" => "Project", "action" => "delete", "id" => $this->Project->getId())) ?>';">Supprimer</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<?php
+$this->inlineScript()->appendFile("/assets/global/plugins/jstree/dist/jstree.min.js", "text/javascript", array());
+$this->inlineScript()->appendScript("
+    $(function() {
+        $('#jstree_job_" . $this->Job->getId() . "_explorer_original').jstree({
+            'core' : {
+              'check_callback' : true,
+              'data' : {
+                    'url' : function (node) {
+                      return '/secure/job/jtreeoriginalget';
+                    },
+                    'data' : function (node) {
+                      return {'id' : " . $this->Job->getId() . " };
+                    }
+                },
+            },
+            'contextmenu' : {
+                    'items' : function(node) {
+                            var tmp = $.jstree.defaults.contextmenu.items();
+                            tmp.download = {
+                                'label':'download',
+                                'action': function(data){
+                                    var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    open = function(verb, url, data, target) {
+                                        var form = document.createElement('form');
+                                        form.action = url;
+                                        form.method = verb;
+                                        form.target = target || '_self';
+                                        if (data) {
+                                          for (var key in data) {
+                                            var input = document.createElement('textarea');
+                                            input.name = key;
+                                            input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
+                                            form.appendChild(input);
+                                          }
+                                        }
+                                        form.style.display = 'none';
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                      };
+                                      var send = [];
+                                      send['Job'] = " . $this->Job->getId() . ";
+                                      send['path'] = obj.id;
+                                      open('POST','http://profond.local/secure/Job/jtreeoriginaldownload',send,'_blank');
+                                }
+                            };
+                            delete tmp.create;
+                            delete tmp.edit;
+                            delete tmp.remove;
+                            delete tmp.ccp;
+                            delete tmp.rename;
+                            
+                            return tmp;
+                    }
+            },
+           'plugins' : [ 'contextmenu','unique','state','sort','dnd','types' ],
+           'types' : {
+                'default' : {
+                    'icon' : 'fa fa-folder icon-state-warning icon-lg'
+                },
+                'file' : {
+                    'icon' : 'fa fa-file icon-state-warning icon-lg'
+                }
+            },
+        });
+       
+           $('#jstree_job_" . $this->Job->getId() . "_explorer_resultat').jstree({
+            'core' : {
+              'check_callback' : true,
+              'data' : {
+                    'url' : function (node) {
+                      return '/secure/job/jtreeresultatget';
+                    },
+                    'data' : function (node) {
+                      return {'id' : " . $this->Job->getId() . " };
+                    }
+                },
+            },
+            'contextmenu' : {
+                    'items' : function(node) {
+                            var tmp = $.jstree.defaults.contextmenu.items();
+                            tmp.download = {
+                                'label':'download',
+                                'action': function(data){
+                                    var inst = $.jstree.reference(data.reference),
+                                    obj = inst.get_node(data.reference);
+                                    open = function(verb, url, data, target) {
+                                        var form = document.createElement('form');
+                                        form.action = url;
+                                        form.method = verb;
+                                        form.target = target || '_self';
+                                        if (data) {
+                                          for (var key in data) {
+                                            var input = document.createElement('textarea');
+                                            input.name = key;
+                                            input.value = typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key];
+                                            form.appendChild(input);
+                                          }
+                                        }
+                                        form.style.display = 'none';
+                                        document.body.appendChild(form);
+                                        form.submit();
+                                      };
+                                      var send = [];
+                                      send['Job'] = " . $this->Job->getId() . ";
+                                      send['path'] = obj.id;
+                                      open('POST','http://profond.local/secure/Job/jtreeresultatdownload',send,'_blank');
+                                }
+                            };
+                            delete tmp.create;
+                            delete tmp.edit;
+                            delete tmp.remove;
+                            delete tmp.ccp;
+                            delete tmp.rename;
+                            
+                            return tmp;
+                    }
+            },
+           'plugins' : [ 'contextmenu','unique','state','sort','dnd','types' ],
+           'types' : {
+                'default' : {
+                    'icon' : 'fa fa-folder icon-state-warning icon-lg'
+                },
+                'file' : {
+                    'icon' : 'fa fa-file icon-state-warning icon-lg'
+                }
+            },
+        });
+    });
+        ", "text/javascript");
+?>
+

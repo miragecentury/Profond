@@ -1,0 +1,299 @@
+<link rel="stylesheet" type="text/css" href="/assets/global/plugins/bootstrap-timepicker/css/bootstrap-timepicker.min.css" />
+<!-- BEGIN PAGE HEADER-->
+<div class="row">
+    <div class="col-md-12">
+        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+        <h3 class="page-title">
+            Lanceur <small> Préparation au lancement de Job</small>
+        </h3>
+        <ul class="page-breadcrumb breadcrumb">
+            <li>
+                <i class="fa fa-home"></i>
+                <a href="<?= $this->url("profond/default", array("controller" => "Index")) ?>">Home</a>
+            </li>
+        </ul>
+        <!-- END PAGE TITLE & BREADCRUMB-->
+    </div>
+</div>
+<!-- END PAGE HEADER-->
+<form id="profondlauncher" method="POST" action="<?= $this->url("profond/lanceurexecute", array("controller" => "Lanceur", "action" => "execute", "idproject" => $this->Project->getId(), "idexec" => $this->Executable->getId())) ?>">
+    <div class="row">
+        <div class='col-md-8'>
+            <div class="portlet box green-seagreen">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cogs"></i>Spécification des clés de configuration
+                    </div>
+                    <div class="tools">
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="table-scrollable">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">
+                                        #
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Key
+                                    </th>
+                                    <th style="text-align: center;">
+                                        File
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Line
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Order
+                                    </th>
+                                    <th style="text-align: center;">
+                                        Value 0
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        #
+                                    </td>
+                                    <td style="text-align: center;">
+                                        %label%
+                                    </td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"><input type="text" name="%label%"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center;">
+                                        #
+                                    </td>
+                                    <td style="text-align: center;">
+                                        %nbcpu%
+                                    </td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"><input type="text" name="%nbcpu%"/></td>
+                                </tr>
+                                <?php foreach ($this->Configs as $tag => $Configs): ?>
+                                    <?php foreach ($Configs as $key => $Config): ?>
+                                        <tr>
+                                            <td style="text-align: center;"><?= $Config->getId() ?></td>
+                                            <?php if ($key == 0): ?>
+                                                <td style="text-align: center;" rowspan="<?= count($Configs) ?>"><?= $Config->getTag() ?></td>
+                                            <?php endif; ?>
+                                            <td style="text-align: center;"><?= str_replace($this->projectpath, "", $Config->getRelpath()) ?></td>
+                                            <td style="text-align: center;"><?= $Config->getLine() ?></td>
+                                            <td style="text-align: center;"><?= $Config->getOrdre() ?></td>
+                                            <?php if ($key == 0): ?>
+                                                <td style="text-align: center;" rowspan="<?= count($Configs) ?>">
+                                                    <input type="text" name="<?= $Config->getTag() ?>"/>
+                                                </td>
+                                            <?php endif; ?>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet box blue-steel">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cogs"></i>Plannification des Lancements
+                    </div>
+                    <div class="tools">
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="form-group">
+                        <label class="control-label col-md-4">Default Datetimepicker</label>
+                        <div class="col-md-8">
+                            <div class="input-group date form_datetime input-medium">
+                                <input name="date" type="text" size="16" readonly class="form-control">
+                                <span class="input-group-btn">
+                                    <button class="btn default date-set" type="button"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </div>
+                    </div>
+                    <br/>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="portlet box blue">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cogs"></i>Description du Projet Source
+                    </div>
+                    <div class="tools">
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Nom du Projet:
+                                </td>
+                                <td style="text-align: center;">
+                                    <?= $this->Project->getLabel() ?>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Date de Création:
+                                </td>
+                                <td style="text-align: center;">
+                                    <?= $this->Project->getDateCrea()->format(DATE_RFC822) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Dernière Date de Modification:
+                                </td>
+                                <td style="text-align: center;">
+                                    <?= $this->Project->getDateLastMod()->format(DATE_RFC822) ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Partage [Affichage] :
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if ($this->Project->getShare()): ?>
+                                        Oui
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">
+                                    Partage [Ecriture] :
+                                </td>
+                                <td style="text-align: center;">
+                                    <?php if ($this->Project->getShareAll()): ?>
+                                        Oui
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="portlet box blue-steel">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cogs"></i>Description de l'Exécutable Choisie
+                    </div>
+                    <div class="tools">
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <table class="portlet-body table table-striped table-hover" style="margin-bottom: 0px;">
+                        <tbody>
+                            <tr>
+                                <td style="text-align: center;">Label :</td>
+                                <td style="text-align: center;"><?= $this->Executable->getLabel() ?></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;">OnlyAdmin :</td>
+                                <td style="text-align: center;">
+                                    <?php if ($this->Executable->getOnlyAdmin()): ?>
+                                        Oui
+                                    <?php else: ?>
+                                        Non
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: center;" >Exec :</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <?= $this->Executable->getExec() ?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <input id="formmachine" type="hidden" value="0" name="machine"/>
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class="portlet box red-flamingo">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <i class="fa fa-cogs"></i>Selection de la Cible d'Exécution
+                    </div>
+                    <div class="tools">
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="tiles">
+                        <div class="tile bg-green double" onclick="exec(0);">
+                            <div class="tile-body">
+                                <i class="fa fa-bolt"></i>
+                            </div>
+                            <div class="tile-object">
+                                <div class="name">
+                                    <h3>Automatique</h3>
+                                </div>
+                                <div class="number">
+                                    0
+                                </div>
+                            </div>
+                        </div>
+                        <?php foreach ($this->Machines as $Machine): ?>
+                            <div class="tile <?php if ($Machine->getReady()): ?>bg-blue<?php else: ?> bg-grey<?php endif; ?> " onclick="<?php if ($Machine->getReady()): ?> exec(<?= $Machine->getId() ?>);
+                            <?php else: ?> alert('Impossible d\'utiliser cette Machine, elle n\' est pas prête');
+                                 <?php endif; ?>">
+                                <div class="tile-body">
+                                    <i class="fa <?php if ($Machine->getReady()): ?>fa-bolt<?php else: ?>fa-warning <?php endif; ?>"></i>
+                                </div>
+                                <div class="tile-object">
+                                    <div class="name">
+                                        <h4><?= $Machine->getLabel() ?></h4>
+                                    </div>
+                                    <div class="number">
+                                        <?= $Machine->getId() ?>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<?php
+$this->inlineScript()->appendFile("/assets/global/plugins/bootstrap-timepicker/js/bootstrap-timepicker.js", "text/javascript");
+$this->inlineScript()->appendFile("/assets/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js", "text/javascript");
+$this->inlineScript()->appendScript("
+        $(\".form_datetime\").datetimepicker({
+            autoclose: true,
+            isRTL: Metronic.isRTL(),
+            format: \"dd MM yyyy - hh:ii\",
+            pickerPosition: (Metronic.isRTL() ? \"bottom-right\" : \"bottom-left\")
+        });
+        ", "text/javascript");
+$this->inlineScript()->appendScript("   
+        var exec = function(machineid){
+            $('#formmachine').attr('value',machineid);
+            $('#profondlauncher').submit();
+        };
+        ", "text/javascript");
+?>
