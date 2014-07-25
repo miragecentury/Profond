@@ -275,12 +275,13 @@ class JobService implements ServiceLocatorAwareInterface {
         stream_set_blocking($stream, true);
         fclose($stream);
         $pathToResultat = $this->getResultPath($Job);
-        $ssh->recept("/root/profondui/jobs/" . $Job->getId() . ".7z", $pathToResultat . '/../');
+        $ssh->recept("/root/profondui/jobs/" . $Job->getId() . ".7z", $pathToResultat . '/../' . $Job->getId() . ".7z");
 //TODO ADD CLEANUP
         $ssh->disconnect();
         exec("cd " . $pathToResultat . '/../ && p7zip -d ' . $Job->getId() . ".7z");
         exec("rm -r " . $pathToResultat);
-        exec("mv " . $this->getPath($Job) . "/" . $Job->getId() . " ./resultat");
+        exec("chmod -R 775 " . $this->getPath($Job));
+        exec("mv " . $this->getPath($Job) . "/" . $Job->getId() . " " . $this->getPath($Job) . "/resultat");
 
 //Libére CPU
         $Machine = $Job->getMachine();
