@@ -97,15 +97,14 @@ class JobController extends AbstractActionController {
         $JobService = $this->getServiceLocator()->get("Profond\Service\Job");
 
         $Job = $JobMapper->findOne($_POST["Job"]);
-        $fileName = $JobService->prepareFileForDownload($Job, $_POST["path"], false);
-
+        $fileName = $JobService->prepareFileForDownload($Job, str_replace("__", "/",$_POST["path"]), false);
         $response = new \Zend\Http\Response\Stream();
         $response->setStream(fopen($fileName, 'r'));
         $response->setStatusCode(200);
 
         $headers = new \Zend\Http\Headers();
         $headers->addHeaderLine('Content-Type', 'whatever your content type is')
-                ->addHeaderLine('Content-Disposition', 'attachment; filename="' . $fileName . '"')
+                ->addHeaderLine('Content-Disposition', 'attachment; filename="' . basename($fileName) . '"')
                 ->addHeaderLine('Content-Length', filesize($fileName));
 
         $response->setHeaders($headers);
